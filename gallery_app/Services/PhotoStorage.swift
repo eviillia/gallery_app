@@ -49,6 +49,13 @@ class PhotoStorage {
             try context.save()
         }
     }
+    
+    
+    func fetchFavoritePhotos() throws -> [FavoritePhoto] {
+        let request = FavoritePhoto.fetchRequest()
+        return try context.fetch(request)
+    }
+    
 
     func isFavourite(photoId: String) -> Bool {
         let request = FavoritePhoto.fetchRequest()
