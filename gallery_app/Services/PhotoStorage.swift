@@ -10,7 +10,7 @@ class PhotoStorage {
         self.context = appDelegate.persistentContainer.viewContext
     }
     
-    func addPhotoToFavourites(_ photo: FavoritePhotoApi) throws {
+    func addPhotoToFavourites(_ photo: ReceivedPhotoApi) throws {
         let request = FavoritePhoto.fetchRequest()
         request.predicate = NSPredicate(format: "id == %@", photo.id)
 

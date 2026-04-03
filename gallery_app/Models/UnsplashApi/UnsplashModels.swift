@@ -1,6 +1,6 @@
 import Foundation
 
-struct FavoritePhotoApi: Codable, Sendable {
+struct ReceivedPhotoApi: Codable, Sendable {
     let id: String
     let created_at: String
     let width: Int
