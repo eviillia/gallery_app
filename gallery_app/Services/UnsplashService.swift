@@ -4,7 +4,7 @@ class UnsplashService {
     
    // let accessKey = "_03UP7N1KKImQfE4xZ4PWG6GRkaFyOw1uxBFOEkovHs"
     
-    func fetchPhotos(page: Int, perPage: Int = 30) async throws -> [FavoritePhotoApi] {
+    func fetchPhotos(page: Int, perPage: Int = 30) async throws -> [ReceivedPhotoApi] {
         
         var components = URLComponents(string: "https://api.unsplash.com/photos")
         components?.queryItems = [
@@ -26,7 +26,7 @@ class UnsplashService {
         }
         
         let decoder = JSONDecoder()
-        return try decoder.decode([FavoritePhotoApi].self, from: data)
+        return try decoder.decode([ReceivedPhotoApi].self, from: data)
     }
 }
 

@@ -4,7 +4,7 @@ import Combine
 @MainActor
 class GalleryViewModel: ObservableObject {
 
-    @Published var photos: [FavoritePhotoApi] = []
+    @Published var photos: [ReceivedPhotoApi] = []
     @Published var errorMessage: String?
 
     private let apiService = UnsplashService()
@@ -41,7 +41,7 @@ class GalleryViewModel: ObservableObject {
     
 
     
-    func toggleFavoriteStatus(for photo: FavoritePhotoApi) {
+    func toggleFavoriteStatus(for photo: ReceivedPhotoApi) {
         let isFavourite = storage.isFavourite(photoId: photo.id)
         
         if isFavourite {
