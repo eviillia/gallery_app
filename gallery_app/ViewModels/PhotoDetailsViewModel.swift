@@ -21,7 +21,7 @@ class PhotoDetailsViewModel: ObservableObject {
     }
 
 
-    var isFavourite: Bool {
+    var isFavorite: Bool {
         return storage.isFavourite(photoId: currentPhoto.id)
     }
 
