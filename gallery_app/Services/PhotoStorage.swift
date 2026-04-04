@@ -24,7 +24,7 @@ class PhotoStorage {
         user.name = photo.user.name
         user.location = photo.user.location
         user.instagramUsername = photo.user.instagram_username
-        user.totalCollections = Int64(photo.user.total_collections)
+        user.totalCollections = Int64(photo.user.total_collections ?? 0)
         
         let newPhoto = FavoritePhoto(context: context)
         newPhoto.id = photo.id
