@@ -51,6 +51,9 @@ class GalleryViewModel: ObservableObject {
         }
     }
 
+    func isFavourite(photoId: String) -> Bool {
+        return storage.isFavourite(photoId: photoId)
+    }
     
     func getNewPhotos(currentIndex: Int) {
         if currentIndex >= photos.count - 6 && !isPageLoading {
