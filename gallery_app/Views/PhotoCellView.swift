@@ -1,6 +1,6 @@
 import UIKit
 
-class PhotoCell: UICollectionViewCell {
+class PhotoCellView: UICollectionViewCell {
     
     static let identifier = "PhotoCell"
     
