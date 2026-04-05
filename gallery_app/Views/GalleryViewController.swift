@@ -40,7 +40,7 @@ final class GalleryViewController: UIViewController {
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = UIColor(named: "midnight")
-        collectionView.register(PhotoCell.self, forCellWithReuseIdentifier: PhotoCell.identifier)
+        collectionView.register(PhotoCellView.self, forCellWithReuseIdentifier: PhotoCellView.identifier)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -118,9 +118,9 @@ extension GalleryViewController: UICollectionViewDataSource, UICollectionViewDel
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: PhotoCell.identifier,
+            withReuseIdentifier: PhotoCellView.identifier,
             for: indexPath
-        ) as! PhotoCell
+        ) as! PhotoCellView
 
         let photo = viewModel.photos[indexPath.item]
         cell.configure(with: photo, isFavourite: viewModel.isFavourite(photoId: photo.id))
