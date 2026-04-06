@@ -6,16 +6,6 @@ final class GalleryViewController: UIViewController {
     private let viewModel = GalleryViewModel()
     private var cancellables = Set<AnyCancellable>()
 
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Photo gallery"
-        label.textColor = UIColor(named: "vanilla")
-        label.font = .systemFont(ofSize: 28, weight: .bold)
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-
     private let errorLabel: UILabel = {
         let label = UILabel()
         label.textColor = .red
@@ -40,7 +30,7 @@ final class GalleryViewController: UIViewController {
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = UIColor(named: "midnight")
-        collectionView.register(PhotoCell.self, forCellWithReuseIdentifier: PhotoCell.identifier)
+        collectionView.register(PhotoCellView.self, forCellWithReuseIdentifier: PhotoCellView.identifier)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -52,6 +42,13 @@ final class GalleryViewController: UIViewController {
         setupUI()
         bindViewModel()
 
+        title = "Photo Gallery"
+        navigationController?.navigationBar.prefersLargeTitles = false
+        navigationController?.navigationBar.titleTextAttributes = [
+            .foregroundColor: UIColor(named: "vanilla") ?? .white,
+            .font: UIFont.systemFont(ofSize: 20, weight: .semibold)
+        ]
+
         Task {
             await viewModel.getPhotos()
         }
@@ -60,17 +57,11 @@ final class GalleryViewController: UIViewController {
     private func setupUI() {
         view.backgroundColor = UIColor(named: "midnight")
 
-        view.addSubview(titleLabel)
         view.addSubview(collectionView)
         view.addSubview(errorLabel)
 
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
-            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
-            titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
-            titleLabel.heightAnchor.constraint(equalToConstant: 44),
-
-            collectionView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 0),
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -118,9 +109,9 @@ extension GalleryViewController: UICollectionViewDataSource, UICollectionViewDel
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: PhotoCell.identifier,
+            withReuseIdentifier: PhotoCellView.identifier,
             for: indexPath
-        ) as! PhotoCell
+        ) as! PhotoCellView
 
         let photo = viewModel.photos[indexPath.item]
         cell.configure(with: photo, isFavourite: viewModel.isFavourite(photoId: photo.id))
