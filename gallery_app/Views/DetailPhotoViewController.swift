@@ -2,7 +2,7 @@ import UIKit
 
 final class DetailPhotoViewController: UIViewController {
     
-    private let photo: ReceivedPhotoApi
+    private let viewModel: PhotoDetailsViewModel
     
     private let scrollView: UIScrollView = {
         let sv = UIScrollView()
@@ -96,8 +96,21 @@ final class DetailPhotoViewController: UIViewController {
         return label
     }()
     
-    init(photo: ReceivedPhotoApi) {
-        self.photo = photo
+    private lazy var heartButton: UIButton = {
+        let button = UIButton(type: .custom)
+        let symbolConfig = UIImage.SymbolConfiguration(pointSize: 32, weight: .regular)
+        let normalImage = UIImage(systemName: "heart", withConfiguration: symbolConfig)
+        let selectedImage = UIImage(systemName: "heart.fill", withConfiguration: symbolConfig)?
+            .withTintColor(.systemRed, renderingMode: .alwaysOriginal)
+        button.setImage(normalImage, for: .normal)
+        button.setImage(selectedImage, for: .selected)
+        button.addTarget(self, action: #selector(heartTapped), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    init(photo: ReceivedPhotoApi, allPhotos: [ReceivedPhotoApi], index: Int) {
+        self.viewModel = PhotoDetailsViewModel(photo: photo, allPhotos: allPhotos, index: index)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -108,7 +121,8 @@ final class DetailPhotoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        loadData()
+        updateUI()
+        setupSwipeGesture()
         
         title = "Photo Detail"
         navigationController?.navigationBar.prefersLargeTitles = false
@@ -134,9 +148,9 @@ final class DetailPhotoViewController: UIViewController {
         contentView.addSubview(locationLabel)
         contentView.addSubview(collectionsLabel)
         contentView.addSubview(instagramLabel)
+        contentView.addSubview(heartButton)
         
         NSLayoutConstraint.activate([
-
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -153,6 +167,11 @@ final class DetailPhotoViewController: UIViewController {
             imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor),
             
+            heartButton.topAnchor.constraint(equalTo: imageView.topAnchor, constant: 12),
+            heartButton.trailingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: -12),
+            heartButton.widthAnchor.constraint(equalToConstant: 50),
+            heartButton.heightAnchor.constraint(equalToConstant: 50),
+            
             descriptionLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20),
             descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
@@ -168,23 +187,23 @@ final class DetailPhotoViewController: UIViewController {
             colorLabel.topAnchor.constraint(equalTo: dimensionsLabel.bottomAnchor, constant: 8),
             colorLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             colorLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-
+            
             usernameLabel.topAnchor.constraint(equalTo: colorLabel.bottomAnchor, constant: 16),
             usernameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             usernameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-
+            
             nameLabel.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 4),
             nameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             nameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-
+            
             locationLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
             locationLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             locationLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-
+            
             collectionsLabel.topAnchor.constraint(equalTo: locationLabel.bottomAnchor, constant: 8),
             collectionsLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             collectionsLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-
+            
             instagramLabel.topAnchor.constraint(equalTo: collectionsLabel.bottomAnchor, constant: 8),
             instagramLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             instagramLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
@@ -192,15 +211,26 @@ final class DetailPhotoViewController: UIViewController {
         ])
     }
     
-    private func loadData() {
+    private func setupSwipeGesture() {
+        let leftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeLeft))
+        leftSwipe.direction = .left
+        view.addGestureRecognizer(leftSwipe)
+    }
+    
+    @objc private func handleSwipeLeft() {
+        if viewModel.moveToNextPhoto() {
+            updateUI()
+        }
+    }
+    
+    private func updateUI() {
+        let photo = viewModel.currentPhoto
+        descriptionLabel.text = photo.description ?? "нет описания"
+        
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let dateString = dateFormatter.string(from: ISO8601DateFormatter().date(from: photo.created_at) ?? Date())
-        
-        descriptionLabel.text = photo.description ?? "нет описания"
-        
         createdDateLabel.text = "Created: \(dateString)"
-        
         dimensionsLabel.text = "Dimensions: w: \(photo.width) * h: \(photo.height)"
         
         if let color = photo.color {
@@ -230,6 +260,8 @@ final class DetailPhotoViewController: UIViewController {
             instagramLabel.text = "Instagram: не указан"
         }
         
+        heartButton.isSelected = viewModel.isFavorite
+        
         if let url = URL(string: photo.urls.full) {
             URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
                 if let data = data, let image = UIImage(data: data) {
@@ -239,5 +271,10 @@ final class DetailPhotoViewController: UIViewController {
                 }
             }.resume()
         }
+    }
+    
+    @objc private func heartTapped() {
+        viewModel.toggleFavoriteStatus()
+        heartButton.isSelected = viewModel.isFavorite
     }
 }
