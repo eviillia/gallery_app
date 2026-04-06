@@ -54,6 +54,11 @@ final class GalleryViewController: UIViewController {
         }
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        collectionView.reloadData()
+    }
+
     private func setupUI() {
         view.backgroundColor = UIColor(named: "midnight")
 
