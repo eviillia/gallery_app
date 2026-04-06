@@ -93,11 +93,11 @@ final class GalleryViewController: UIViewController {
     }
 
     private func openDetail(for photoId: String) {
-        let foundPhoto = viewModel.photos.first { $0.id == photoId }
-        if let photo = foundPhoto {
-            let detailVC = DetailPhotoViewController(photo: photo)
-            navigationController?.pushViewController(detailVC, animated: true)
-        }
+        guard let photo = viewModel.photos.first(where: { $0.id == photoId }),
+              let index = viewModel.photos.firstIndex(where: { $0.id == photoId }) else { return }
+        
+        let detailVC = DetailPhotoViewController(photo: photo, allPhotos: viewModel.photos, index: index)
+        navigationController?.pushViewController(detailVC, animated: true)
     }
 }
 
