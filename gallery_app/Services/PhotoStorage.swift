@@ -35,7 +35,7 @@ class PhotoStorage {
         newPhoto.regularUrl = photo.urls.regular
         newPhoto.fullUrl = photo.urls.full
         newPhoto.user = user
-        newPhoto.createdAt = Date()
+        newPhoto.createdAt = ISO8601DateFormatter().date(from: photo.created_at) ?? Date()
         newPhoto.width = Int32(photo.width)
         newPhoto.height = Int32(photo.height)
         newPhoto.color = photo.color

@@ -118,11 +118,11 @@ final class FavoritePhotosViewController: UIViewController {
             )
             let unsplashPhoto = ReceivedPhotoApi(
                 id: favPhoto.id ?? "",
-                created_at: "",
+                created_at: favPhoto.createdAt?.ISO8601Format() ?? "",
                 width: Int(favPhoto.width),
                 height: Int(favPhoto.height),
                 color: favPhoto.color,
-                description: favPhoto.altDescription,
+                description: favPhoto.photoDescription,
                 alt_description: favPhoto.altDescription,
                 urls: urls,
                 user: user
