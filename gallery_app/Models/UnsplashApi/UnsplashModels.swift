@@ -7,6 +7,7 @@ struct ReceivedPhotoApi: Codable, Sendable {
     let height: Int
     let color: String?
     let description: String?
+    let alt_description: String?
     let urls: urlsApi
     let user: UserApi
 }

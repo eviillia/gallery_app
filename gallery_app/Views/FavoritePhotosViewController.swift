@@ -123,6 +123,7 @@ final class FavoritePhotosViewController: UIViewController {
                 height: Int(favPhoto.height),
                 color: favPhoto.color,
                 description: favPhoto.photoDescription,
+                alt_description: nil,
                 urls: urls,
                 user: user
             )
@@ -169,6 +170,7 @@ extension FavoritePhotosViewController: UICollectionViewDataSource, UICollection
             height: Int(photo.height),
             color: photo.color,
             description: photo.photoDescription,
+            alt_description: nil,
             urls: urls,
             user: user
         )
