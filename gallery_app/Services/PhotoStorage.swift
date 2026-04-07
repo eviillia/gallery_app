@@ -5,6 +5,10 @@ class PhotoStorage {
     static let shared = PhotoStorage()
     private let context: NSManagedObjectContext
     
+    init(context: NSManagedObjectContext) {
+        self.context = context
+    }
+    
     private init() {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         self.context = appDelegate.persistentContainer.viewContext

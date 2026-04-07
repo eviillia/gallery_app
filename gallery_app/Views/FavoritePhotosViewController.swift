@@ -100,33 +100,39 @@ final class FavoritePhotosViewController: UIViewController {
     }
     
     private func openDetail(for photo: FavoritePhoto) {
+        var allPhotos: [ReceivedPhotoApi] = []
+        var currentIndex = 0
         
-        let urls = urlsApi(
-            regular: photo.regularUrl ?? "",
-            full: photo.fullUrl ?? ""
-        )
-
-        let user = UserApi(
-            id: photo.user?.userId ?? "",
-            username: photo.user?.username ?? "",
-            name: photo.user?.name ?? "",
-            location: photo.user?.location,
-            total_collections: Int(photo.user?.totalCollections ?? 0),
-            instagram_username: photo.user?.instagramUsername
-        )
-
-        let unsplashPhoto = ReceivedPhotoApi(
-            id: photo.id ?? "",
-            created_at: "",
-            width: Int(photo.width),
-            height: Int(photo.height),
-            color: photo.color,
-            description: photo.photoDescription,
-            urls: urls,
-            user: user
-        )
+        for (idx, favPhoto) in viewModel.favouritePhotos.enumerated() {
+            let urls = urlsApi(
+                regular: favPhoto.regularUrl ?? "",
+                full: favPhoto.fullUrl ?? ""
+            )
+            let user = UserApi(
+                id: favPhoto.user?.userId ?? "",
+                username: favPhoto.user?.username ?? "",
+                name: favPhoto.user?.name ?? "",
+                location: favPhoto.user?.location,
+                total_collections: Int(favPhoto.user?.totalCollections ?? 0),
+                instagram_username: favPhoto.user?.instagramUsername
+            )
+            let unsplashPhoto = ReceivedPhotoApi(
+                id: favPhoto.id ?? "",
+                created_at: "",
+                width: Int(favPhoto.width),
+                height: Int(favPhoto.height),
+                color: favPhoto.color,
+                description: favPhoto.photoDescription,
+                urls: urls,
+                user: user
+            )
+            allPhotos.append(unsplashPhoto)
+            if favPhoto.id == photo.id {
+                currentIndex = idx
+            }
+        }
         
-        let detailVC = DetailPhotoViewController(photo: unsplashPhoto)
+        let detailVC = DetailPhotoViewController(photo: allPhotos[currentIndex], allPhotos: allPhotos, index: currentIndex)
         navigationController?.pushViewController(detailVC, animated: true)
     }
 }
