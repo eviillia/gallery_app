@@ -246,17 +246,11 @@ final class DetailPhotoViewController: UIViewController {
         
         titleLabel.text = titleText
 
-        if let description = photo.description {
-            descriptionLabel.text = description
-        } else {
-            descriptionLabel.text = "нет описания"
-        }
-
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let dateString = dateFormatter.string(from: ISO8601DateFormatter().date(from: photo.created_at) ?? Date())
         createdDateLabel.text = "Created: \(dateString)"
- 
+
         dimensionsLabel.text = "Dimensions: w: \(photo.width) * h: \(photo.height)"
         
         if let color = photo.color {
@@ -264,7 +258,7 @@ final class DetailPhotoViewController: UIViewController {
         } else {
             colorLabel.text = "Color: не указан"
         }
-    
+
         usernameLabel.text = "Username: \(photo.user.username)"
         nameLabel.text = "Name: \(photo.user.name)"
         
@@ -284,6 +278,30 @@ final class DetailPhotoViewController: UIViewController {
             instagramLabel.text = "Instagram: @\(instagram)"
         } else {
             instagramLabel.text = "Instagram: не указан"
+        }
+
+        let desc = photo.description?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let alt = photo.alt_description?.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        let descNormalized = desc?.lowercased()
+        let altNormalized = alt?.lowercased()
+
+        if let desc = desc, !desc.isEmpty {
+            titleLabel.text = desc
+        } else if let alt = alt, !alt.isEmpty {
+            titleLabel.text = alt
+        } else {
+            titleLabel.text = "без названия"
+        }
+
+        if let desc = desc,
+           let alt = alt,
+           descNormalized != altNormalized {
+            
+            descriptionLabel.text = alt
+            
+        } else {
+            descriptionLabel.text = nil
         }
 
         heartButton.isSelected = viewModel.isFavorite

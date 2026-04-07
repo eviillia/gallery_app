@@ -40,6 +40,7 @@ class PhotoStorage {
         newPhoto.height = Int32(photo.height)
         newPhoto.color = photo.color
         newPhoto.photoDescription = photo.description
+        newPhoto.altDescription = photo.alt_description
         
         try context.save()
     }
