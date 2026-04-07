@@ -1,28 +1,28 @@
 import UIKit
 
 final class DetailPhotoViewController: UIViewController {
-    
+
     private let viewModel: PhotoDetailsViewModel
-    
+
     private let scrollView: UIScrollView = {
-        let sv = UIScrollView()
-        sv.translatesAutoresizingMaskIntoConstraints = false
-        return sv
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        return scrollView
     }()
-    
+
     private let contentView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
+
     private let imageView: UIImageView = {
-        let iv = UIImageView()
-        iv.contentMode = .scaleAspectFit
-        iv.translatesAutoresizingMaskIntoConstraints = false
-        return iv
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
     }()
-    
+
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 24, weight: .bold)
@@ -31,7 +31,7 @@ final class DetailPhotoViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
+
     private let descriptionLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 20, weight: .bold)
@@ -40,7 +40,7 @@ final class DetailPhotoViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
+
     private let createdDateLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 14)
@@ -48,7 +48,7 @@ final class DetailPhotoViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
+
     private let dimensionsLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 14)
@@ -56,7 +56,7 @@ final class DetailPhotoViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
+
     private let colorLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 14)
@@ -64,7 +64,7 @@ final class DetailPhotoViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
+
     private let usernameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 20, weight: .bold)
@@ -72,7 +72,7 @@ final class DetailPhotoViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
+
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16, weight: .medium)
@@ -80,7 +80,7 @@ final class DetailPhotoViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
+
     private let locationLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 14)
@@ -88,7 +88,7 @@ final class DetailPhotoViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
+
     private let collectionsLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 14)
@@ -96,7 +96,7 @@ final class DetailPhotoViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
+
     private let instagramLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 14)
@@ -104,7 +104,7 @@ final class DetailPhotoViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
+
     private lazy var heartButton: UIButton = {
         let button = UIButton(type: .custom)
         let symbolConfig = UIImage.SymbolConfiguration(pointSize: 32, weight: .regular)
@@ -117,22 +117,22 @@ final class DetailPhotoViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
-    
+
     init(photo: ReceivedPhotoApi, allPhotos: [ReceivedPhotoApi], index: Int) {
         self.viewModel = PhotoDetailsViewModel(photo: photo, allPhotos: allPhotos, index: index)
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         updateUI()
         setupSwipeGesture()
-        
+
         title = "Photo Detail"
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.navigationBar.titleTextAttributes = [
@@ -140,13 +140,13 @@ final class DetailPhotoViewController: UIViewController {
             .font: UIFont.systemFont(ofSize: 20, weight: .semibold)
         ]
     }
-    
+
     private func setupUI() {
         view.backgroundColor = UIColor(named: "midnight")
-        
+
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
-        
+
         contentView.addSubview(imageView)
         contentView.addSubview(titleLabel)
         contentView.addSubview(descriptionLabel)
@@ -159,91 +159,91 @@ final class DetailPhotoViewController: UIViewController {
         contentView.addSubview(collectionsLabel)
         contentView.addSubview(instagramLabel)
         contentView.addSubview(heartButton)
-        
+
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            
+
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-            
+
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
             imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor),
-            
+
             titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            
+
             heartButton.topAnchor.constraint(equalTo: imageView.topAnchor, constant: 12),
             heartButton.trailingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: -12),
             heartButton.widthAnchor.constraint(equalToConstant: 50),
             heartButton.heightAnchor.constraint(equalToConstant: 50),
-            
+
             descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),
             descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            
+
             createdDateLabel.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 12),
             createdDateLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             createdDateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            
+
             dimensionsLabel.topAnchor.constraint(equalTo: createdDateLabel.bottomAnchor, constant: 8),
             dimensionsLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             dimensionsLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            
+
             colorLabel.topAnchor.constraint(equalTo: dimensionsLabel.bottomAnchor, constant: 8),
             colorLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             colorLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            
+
             usernameLabel.topAnchor.constraint(equalTo: colorLabel.bottomAnchor, constant: 16),
             usernameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             usernameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            
+
             nameLabel.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 4),
             nameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             nameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            
+
             locationLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
             locationLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             locationLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            
+
             collectionsLabel.topAnchor.constraint(equalTo: locationLabel.bottomAnchor, constant: 8),
             collectionsLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             collectionsLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            
+
             instagramLabel.topAnchor.constraint(equalTo: collectionsLabel.bottomAnchor, constant: 8),
             instagramLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             instagramLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             instagramLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -30)
         ])
     }
-    
+
     private func setupSwipeGesture() {
         let leftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeLeft))
         leftSwipe.direction = .left
         view.addGestureRecognizer(leftSwipe)
     }
-    
+
     @objc private func handleSwipeLeft() {
         if viewModel.moveToNextPhoto() {
             updateUI()
         }
     }
-    
+
     private func updateUI() {
         let photo = viewModel.currentPhoto
 
         let titleText = photo.description
             ?? photo.alt_description
             ?? "без названия"
-        
+
         titleLabel.text = titleText
 
         let dateFormatter = DateFormatter()
@@ -252,7 +252,7 @@ final class DetailPhotoViewController: UIViewController {
         createdDateLabel.text = "Created: \(dateString)"
 
         dimensionsLabel.text = "Dimensions: w: \(photo.width) * h: \(photo.height)"
-        
+
         if let color = photo.color {
             colorLabel.text = "Color: \(color)"
         } else {
@@ -261,19 +261,19 @@ final class DetailPhotoViewController: UIViewController {
 
         usernameLabel.text = "Username: \(photo.user.username)"
         nameLabel.text = "Name: \(photo.user.name)"
-        
+
         if let location = photo.user.location {
             locationLabel.text = "Location: \(location)"
         } else {
             locationLabel.text = "Location: не указана"
         }
-        
+
         if let totalCollections = photo.user.total_collections {
             collectionsLabel.text = "Collections: \(totalCollections)"
         } else {
             collectionsLabel.text = "Collections: не указано"
         }
-        
+
         if let instagram = photo.user.instagram_username {
             instagramLabel.text = "Instagram: @\(instagram)"
         } else {
@@ -297,9 +297,9 @@ final class DetailPhotoViewController: UIViewController {
         if let desc = desc,
            let alt = alt,
            descNormalized != altNormalized {
-            
+
             descriptionLabel.text = alt
-            
+
         } else {
             descriptionLabel.text = nil
         }
@@ -316,7 +316,7 @@ final class DetailPhotoViewController: UIViewController {
             }.resume()
         }
     }
-    
+
     @objc private func heartTapped() {
         viewModel.toggleFavoriteStatus()
         heartButton.isSelected = viewModel.isFavorite

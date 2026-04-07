@@ -4,7 +4,6 @@ import Combine
 @MainActor
 class PhotoDetailsViewModel: ObservableObject {
 
-
     @Published var currentPhoto: ReceivedPhotoApi
     @Published var errorMessage: String?
 
@@ -13,18 +12,15 @@ class PhotoDetailsViewModel: ObservableObject {
     private let allPhotos: [ReceivedPhotoApi]
     private var currentIndex: Int
 
-
     init(photo: ReceivedPhotoApi, allPhotos: [ReceivedPhotoApi], index: Int) {
         self.currentPhoto = photo
         self.allPhotos = allPhotos
         self.currentIndex = index
     }
 
-
     var isFavorite: Bool {
         return storage.isFavourite(photoId: currentPhoto.id)
     }
-
 
     func toggleFavoriteStatus() {
         let isFavourite = storage.isFavourite(photoId: currentPhoto.id)
@@ -37,8 +33,6 @@ class PhotoDetailsViewModel: ObservableObject {
 
         objectWillChange.send()
     }
-
-
 
     func moveToNextPhoto() -> Bool {
         if currentIndex + 1 < allPhotos.count {
@@ -68,6 +62,4 @@ class PhotoDetailsViewModel: ObservableObject {
         return currentIndex - 1 >= 0
     }
 
-
 }
-

@@ -1,7 +1,6 @@
 public import Foundation
 public import CoreData
 
-
 public typealias UserCoreDataPropertiesSet = NSSet
 
 extension User {

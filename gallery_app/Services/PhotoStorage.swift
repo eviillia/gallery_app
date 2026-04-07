@@ -4,16 +4,18 @@ import UIKit
 class PhotoStorage {
     static let shared = PhotoStorage()
     private let context: NSManagedObjectContext
-    
+
     init(context: NSManagedObjectContext) {
         self.context = context
     }
-    
+
     private init() {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            fatalError("AppDelegate is not of type AppDelegate")
+        }
         self.context = appDelegate.persistentContainer.viewContext
     }
-    
+
     func addPhotoToFavourites(_ photo: ReceivedPhotoApi) throws {
         let request = FavoritePhoto.fetchRequest()
         request.predicate = NSPredicate(format: "id == %@", photo.id)
@@ -21,7 +23,7 @@ class PhotoStorage {
         if let existingPhoto = try context.fetch(request).first {
             return
         }
-        
+
         let user = User(context: context)
         user.userId = photo.user.id
         user.username = photo.user.username
@@ -29,7 +31,7 @@ class PhotoStorage {
         user.location = photo.user.location
         user.instagramUsername = photo.user.instagram_username
         user.totalCollections = Int64(photo.user.total_collections ?? 0)
-        
+
         let newPhoto = FavoritePhoto(context: context)
         newPhoto.id = photo.id
         newPhoto.regularUrl = photo.urls.regular
@@ -41,26 +43,24 @@ class PhotoStorage {
         newPhoto.color = photo.color
         newPhoto.photoDescription = photo.description
         newPhoto.altDescription = photo.alt_description
-        
+
         try context.save()
     }
-    
+
     func removeFavoritePhoto(photoId: String) throws {
         let request = FavoritePhoto.fetchRequest()
         request.predicate = NSPredicate(format: "id == %@", photoId)
-        
+
         if let photoToDelete = try context.fetch(request).first {
             context.delete(photoToDelete)
             try context.save()
         }
     }
-    
-    
+
     func fetchFavoritePhotos() throws -> [FavoritePhoto] {
         let request = FavoritePhoto.fetchRequest()
         return try context.fetch(request)
     }
-    
 
     func isFavourite(photoId: String) -> Bool {
         let request = FavoritePhoto.fetchRequest()
