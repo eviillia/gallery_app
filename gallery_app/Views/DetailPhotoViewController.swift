@@ -23,6 +23,15 @@ final class DetailPhotoViewController: UIViewController {
         return iv
     }()
     
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 24, weight: .bold)
+        label.textColor = UIColor(named: "vanilla")
+        label.numberOfLines = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     private let descriptionLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 20, weight: .bold)
@@ -139,6 +148,7 @@ final class DetailPhotoViewController: UIViewController {
         scrollView.addSubview(contentView)
         
         contentView.addSubview(imageView)
+        contentView.addSubview(titleLabel)
         contentView.addSubview(descriptionLabel)
         contentView.addSubview(createdDateLabel)
         contentView.addSubview(dimensionsLabel)
@@ -167,12 +177,16 @@ final class DetailPhotoViewController: UIViewController {
             imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor),
             
+            titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
             heartButton.topAnchor.constraint(equalTo: imageView.topAnchor, constant: 12),
             heartButton.trailingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: -12),
             heartButton.widthAnchor.constraint(equalToConstant: 50),
             heartButton.heightAnchor.constraint(equalToConstant: 50),
             
-            descriptionLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20),
+            descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),
             descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
@@ -225,12 +239,18 @@ final class DetailPhotoViewController: UIViewController {
     
     private func updateUI() {
         let photo = viewModel.currentPhoto
-        descriptionLabel.text = photo.description ?? "нет описания"
+
+        let titleText = photo.description
+            ?? photo.alt_description
+            ?? "без названия"
         
+        titleLabel.text = titleText
+
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let dateString = dateFormatter.string(from: ISO8601DateFormatter().date(from: photo.created_at) ?? Date())
         createdDateLabel.text = "Created: \(dateString)"
+
         dimensionsLabel.text = "Dimensions: w: \(photo.width) * h: \(photo.height)"
         
         if let color = photo.color {
@@ -238,7 +258,7 @@ final class DetailPhotoViewController: UIViewController {
         } else {
             colorLabel.text = "Color: не указан"
         }
-        
+
         usernameLabel.text = "Username: \(photo.user.username)"
         nameLabel.text = "Name: \(photo.user.name)"
         
@@ -259,9 +279,33 @@ final class DetailPhotoViewController: UIViewController {
         } else {
             instagramLabel.text = "Instagram: не указан"
         }
-        
+
+        let desc = photo.description?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let alt = photo.alt_description?.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        let descNormalized = desc?.lowercased()
+        let altNormalized = alt?.lowercased()
+
+        if let desc = desc, !desc.isEmpty {
+            titleLabel.text = desc
+        } else if let alt = alt, !alt.isEmpty {
+            titleLabel.text = alt
+        } else {
+            titleLabel.text = "без названия"
+        }
+
+        if let desc = desc,
+           let alt = alt,
+           descNormalized != altNormalized {
+            
+            descriptionLabel.text = alt
+            
+        } else {
+            descriptionLabel.text = nil
+        }
+
         heartButton.isSelected = viewModel.isFavorite
-        
+
         if let url = URL(string: photo.urls.full) {
             URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
                 if let data = data, let image = UIImage(data: data) {

@@ -16,6 +16,7 @@ extension FavoritePhoto {
     @NSManaged public var height: Int32
     @NSManaged public var id: String?
     @NSManaged public var photoDescription: String?
+    @NSManaged public var altDescription: String?
     @NSManaged public var regularUrl: String?
     @NSManaged public var width: Int32
     @NSManaged public var user: User?

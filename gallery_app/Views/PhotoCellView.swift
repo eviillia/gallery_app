@@ -99,7 +99,7 @@ class PhotoCellView: UICollectionViewCell {
     func configure(with photo: ReceivedPhotoApi, isFavourite: Bool) {
         currentPhotoId = photo.id
         heartButton.isSelected = isFavourite
-        descriptionLabel.text = photo.description ?? "нет описания"
+        descriptionLabel.text = photo.description ?? photo.alt_description ?? "нет описания"
         
         if let url = URL(string: photo.urls.regular) {
             let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
