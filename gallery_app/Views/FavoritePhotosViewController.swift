@@ -123,7 +123,7 @@ final class FavoritePhotosViewController: UIViewController {
                 height: Int(favPhoto.height),
                 color: favPhoto.color,
                 description: favPhoto.altDescription,
-                alt_description: nil,
+                alt_description: favPhoto.altDescription,
                 urls: urls,
                 user: user
             )
