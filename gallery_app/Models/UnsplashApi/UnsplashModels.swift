@@ -8,11 +8,11 @@ struct ReceivedPhotoApi: Codable, Sendable {
     let color: String?
     let description: String?
     let alt_description: String?
-    let urls: urlsApi
+    let urls: UrlsApi
     let user: UserApi
 }
 
-struct urlsApi: Codable, Sendable {
+struct UrlsApi: Codable, Sendable {
     let regular: String
     let full: String
 }

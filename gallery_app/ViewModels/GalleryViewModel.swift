@@ -12,38 +12,36 @@ class GalleryViewModel: ObservableObject {
 
     private var currentPage = 1
     private var isPageLoading = false
-    
+
     func getPhotos() async {
-        
+
         if isPageLoading {
             return
         }
-        
+
         isPageLoading = true
-        
+
         do {
             let newPhotos = try await apiService.fetchPhotos(page: currentPage, perPage: 30)
-            
+
             if newPhotos.isEmpty {
                 isPageLoading = false
                 return
             }
-            
+
             photos.append(contentsOf: newPhotos)
             currentPage += 1
             isPageLoading = false
-            
+
         } catch {
             errorMessage = "ошибка: \(error.localizedDescription)"
             isPageLoading = false
         }
     }
-    
 
-    
     func toggleFavoriteStatus(for photo: ReceivedPhotoApi) {
         let isFavourite = storage.isFavourite(photoId: photo.id)
-        
+
         if isFavourite {
             try? storage.removeFavoritePhoto(photoId: photo.id)
         } else {
@@ -54,11 +52,11 @@ class GalleryViewModel: ObservableObject {
     func isFavourite(photoId: String) -> Bool {
         return storage.isFavourite(photoId: photoId)
     }
-    
+
     func getNewPhotos(currentIndex: Int) {
         if currentIndex >= photos.count - 6 && !isPageLoading {
-                   Task {
-                       await getPhotos()
+            Task {
+                await getPhotos()
             }
         }
     }

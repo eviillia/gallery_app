@@ -100,7 +100,7 @@ final class GalleryViewController: UIViewController {
     private func openDetail(for photoId: String) {
         guard let photo = viewModel.photos.first(where: { $0.id == photoId }),
               let index = viewModel.photos.firstIndex(where: { $0.id == photoId }) else { return }
-        
+
         let detailVC = DetailPhotoViewController(photo: photo, allPhotos: viewModel.photos, index: index)
         navigationController?.pushViewController(detailVC, animated: true)
     }
@@ -113,10 +113,12 @@ extension GalleryViewController: UICollectionViewDataSource, UICollectionViewDel
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(
+        guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: PhotoCellView.identifier,
             for: indexPath
-        ) as! PhotoCellView
+        ) as? PhotoCellView else {
+            return UICollectionViewCell()
+        }
 
         let photo = viewModel.photos[indexPath.item]
         cell.configure(with: photo, isFavourite: viewModel.isFavourite(photoId: photo.id))

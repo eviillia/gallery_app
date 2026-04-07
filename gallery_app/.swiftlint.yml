@@ -1,0 +1,13 @@
+disabled_rules:
+  - trailing_whitespace
+  - type_body_length
+  - file_length
+  - function_body_length
+  - line_length
+  - identifier_name 
+
+opt_in_rules:
+  - empty_count
+
+excluded:
+  - gallery_appTests

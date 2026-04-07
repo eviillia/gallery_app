@@ -1,7 +1,6 @@
 public import Foundation
 public import CoreData
 
-
 public typealias FavoritePhotoCoreDataPropertiesSet = NSSet
 
 extension FavoritePhoto {

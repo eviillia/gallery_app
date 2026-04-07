@@ -29,10 +29,9 @@ struct PhotoStorageTests {
         #expect(storage.isFavourite(photoId: "1") == true)
     }
     
-    
     @Test("добавить фото с опциональными полями")
     func addPhotoWithNilFields() throws {
-        let urls = urlsApi(regular: "https://example.com", full: "https://example.com")
+        let urls = UrlsApi(regular: "https://example.com", full: "https://example.com")
         let user = UserApi(
             id: "user111",
             username: "user",
@@ -48,6 +47,7 @@ struct PhotoStorageTests {
             height: 100,
             color: nil,
             description: nil,
+            alt_description: nil,
             urls: urls,
             user: user
         )
@@ -56,7 +56,7 @@ struct PhotoStorageTests {
     }
 
     private func createTestPhoto(id: String) -> ReceivedPhotoApi {
-        let urls = urlsApi(regular: "https://test.com", full: "https://test.com")
+        let urls = UrlsApi(regular: "https://test.com", full: "https://test.com")
         let user = UserApi(
             id: "user1",
             username: "user",
@@ -72,6 +72,7 @@ struct PhotoStorageTests {
             height: 100,
             color: "#FFFFFF",
             description: "Test photo \(id)",
+            alt_description: "Test photo1 \(id)",
             urls: urls,
             user: user
         )
