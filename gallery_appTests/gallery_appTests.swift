@@ -47,6 +47,7 @@ struct PhotoStorageTests {
             height: 100,
             color: nil,
             description: nil,
+            alt_description: nil,
             urls: urls,
             user: user
         )
@@ -71,6 +72,7 @@ struct PhotoStorageTests {
             height: 100,
             color: "#FFFFFF",
             description: "Test photo \(id)",
+            alt_description: "Test photo1 \(id)",
             urls: urls,
             user: user
         )
